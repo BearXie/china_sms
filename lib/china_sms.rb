@@ -27,6 +27,10 @@ module ChinaSMS
     @service.get options if @service
   end
 
+  def deposit
+    @service&.deposit || 0
+  end
+
   def clear
     @service = @username = @password = nil
   end
