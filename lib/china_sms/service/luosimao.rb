@@ -6,6 +6,7 @@ module ChinaSMS
       extend self
 
       URL = "https://sms-api.luosimao.com/v1/send.json"
+      DEPOSIT_URL = 'https://sms-api.luosimao.com/v1/status.json'
 
       def to(phone, content, options)
         url = URI.parse(URL)
@@ -17,6 +18,17 @@ module ChinaSMS
         socket.use_ssl = true
         response = socket.start {|http| http.request(post) }
         result JSON.parse(response.body)
+      end
+
+      def deposit(options)
+        url = URI.parse(DEPOSIT_URL)
+        get = Net::HTTP::Get.new(url.path)
+        get.basic_auth(options[:username], options[:password])
+        socket = Net::HTTP.new(url.host, url.port)
+        socket.use_ssl = true
+        response = socket.start {|http| http.request(get) }
+        res = JSON.parse(response.body)
+        res['deposit'].to_i
       end
 
       def result(body)
